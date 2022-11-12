@@ -1,4 +1,4 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const mode = process.env.MODE
 
 module.exports = {
@@ -14,53 +14,45 @@ module.exports = {
     rules: [
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                sourceMap: (mode === 'development')
-              }
-            },
-            'sass-loader',
-            'import-glob-loader'
-          ]
-        })
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader', 'import-glob-loader']
       },
       {
         test: /\.js$/,
+        loader: 'babel-loader',
         exclude: /node_modules/,
-        use: [
-          'babel-loader',
-          {
-            loader: 'eslint-loader',
-            options: {
-              fix: false,
-              failOnError: true
-            }
-          }
-        ]
+        options: {
+          presets: ["@babel/react","@babel/env"]
+        }
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 51200,
-              name: '../images/other/[name].[ext]'
-            }
-          }
-        ]
+        type: 'asset/resource'
       }
+      // {
+      //   test: /\.(png|jpg|gif|svg)$/,
+      //   use: [
+      //     {
+      //       loader: 'url-loader',
+      //       options: {
+      //         limit: 51200,
+      //         name: '../images/other/[name].[ext]'
+      //       }
+      //     }
+      //   ]
+      // }
     ]
   },
   plugins: [
-    new ExtractTextPlugin('../stylesheets/style.css')
+    new MiniCssExtractPlugin({
+      filename: '../stylesheets/style.css'
+    })
   ],
   devServer: {
     historyApiFallback: true,
-    contentBase: `${ __dirname }/public`,
+    // contentBase: `${ __dirname }/public`,
+    static: {
+      directory: `${ __dirname }/public`
+    },
     port: 3000,
     open: true
   }
