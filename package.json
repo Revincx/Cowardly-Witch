@@ -2,6 +2,9 @@
   "name": "Cowardly-Witch",
   "version": "7.0.0",
   "main": "webpack.config.js",
+  "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "precommit": "lint-staged",
     "lint": "eslint .",
